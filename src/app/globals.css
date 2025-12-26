@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 15% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 15% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 15% 10%;
+    --primary: 210 97% 28%; /* Maruti Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 14% 97%;
+    --secondary-foreground: 20 15% 10%;
+    --muted: 210 14% 97%;
+    --muted-foreground: 210 5% 45%;
+    --accent: 210 14% 93%;
+    --accent-foreground: 20 15% 10%;
+    --destructive: 3 81% 48%; /* Maruti Red */
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 18% 87%;
+    --input: 210 18% 87%;
+    --ring: 210 97% 28%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 20 15% 10%;
+    --foreground: 0 0% 98%;
+    --card: 20 15% 10%;
+    --card-foreground: 0 0% 98%;
+    --popover: 20 15% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 210 97% 28%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 4% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 210 4% 16%;
+    --muted-foreground: 210 5% 55%;
+    --accent: 210 4% 20%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 3 81% 48%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 4% 20%;
+    --input: 210 4% 20%;
+    --ring: 210 97% 28%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

@@ -2,34 +2,34 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Building2, FileText, Plus, BookOpen, Bell } from "lucide-react"
+import { Home, Building2, FileText, BookTemplate, Bell, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navigation = [
   {
-    name: "Home",
+    name: "Dashboard",
     href: "/",
     icon: Home,
   },
   {
-    name: "All Environments",
+    name: "Environments",
     href: "/environments",
     icon: Building2,
   },
   {
-    name: "All Service Requests",
+    name: "Service Requests",
     href: "/service-requests",
     icon: FileText,
   },
   {
-    name: "New Request",
-    href: "/new-request",
-    icon: Plus,
+    name: "Templates",
+    href: "/templates",
+    icon: BookTemplate,
   },
   {
-    name: "Knowledge Base",
-    href: "/knowledge-base",
-    icon: BookOpen,
+    name: "Profile",
+    href: "/profile",
+    icon: User,
   },
 ]
 
@@ -77,10 +77,10 @@ export function Sidebar() {
       <div className="border-t p-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-maruti-blue text-white">
-            RK
+            IJ
           </div>
           <div className="flex-1">
-            <div className="text-sm font-medium text-maruti-black">Rajesh Kumar</div>
+            <div className="text-sm font-medium text-maruti-black">Ishaan</div>
             <div className="text-xs text-gray-500">Developer</div>
           </div>
           <button className="text-gray-400 hover:text-gray-600">

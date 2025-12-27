@@ -9,12 +9,45 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Building2, ExternalLink } from "lucide-react"
 import { mockEnvironments } from "@/lib/mock-data"
 import { formatCurrency, formatDate, getStatusColor } from "@/lib/utils"
+import type { Environment } from "@/types"
+
+// Add new environment being deployed
+const allEnvironments: Environment[] = [
+  {
+    id: "env-new",
+    name: "ecommerce-production",
+    project: "Ecommerce Platform",
+    type: "prod",
+    status: "provisioning",
+    resources: 0,
+    cost: 587.5,
+    health: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    serviceRequests: [],
+    vpc: {
+      cidr: "10.100.0.0/16",
+      vpcId: 100,
+      subnets: {
+        public: ["10.100.1.0/24"],
+        private: ["10.100.2.0/24"],
+        database: ["10.100.3.0/24"],
+        cache: ["10.100.4.0/24"],
+      },
+      availabilityZones: ["ap-south-1a", "ap-south-1b"],
+    },
+    completedSRs: 6,
+    totalSRs: 9,
+    deploymentProgress: 67,
+  },
+  ...mockEnvironments,
+]
 
 export default function EnvironmentsPage() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [typeFilter, setTypeFilter] = useState("all")
 
-  const filteredEnvs = mockEnvironments.filter((env) => {
+  const filteredEnvs = allEnvironments.filter((env) => {
     if (statusFilter !== "all" && env.status !== statusFilter) return false
     if (typeFilter !== "all" && env.type !== typeFilter) return false
     return true
@@ -30,8 +63,8 @@ export default function EnvironmentsPage() {
             Manage and monitor your infrastructure environments
           </p>
         </div>
-        <Link href="/upload-architecture">
-          <Button className="bg-maruti-red hover:bg-maruti-red/90">
+        <Link href="/create/step-1">
+          <Button className="bg-maruti-blue hover:bg-maruti-blue/90">
             Create New Environment
           </Button>
         </Link>
@@ -92,7 +125,7 @@ export default function EnvironmentsPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-maruti-black">
-              {mockEnvironments.filter(e => e.status === "active").length}
+              {allEnvironments.filter(e => e.status === "active").length}
             </div>
             <div className="text-sm text-gray-600">Active</div>
           </CardContent>
@@ -100,7 +133,7 @@ export default function EnvironmentsPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-maruti-black">
-              {mockEnvironments.filter(e => e.status === "provisioning").length}
+              {allEnvironments.filter(e => e.status === "provisioning").length}
             </div>
             <div className="text-sm text-gray-600">Provisioning</div>
           </CardContent>
@@ -108,7 +141,7 @@ export default function EnvironmentsPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-maruti-black">
-              {mockEnvironments.reduce((sum, e) => sum + e.resources, 0)}
+              {allEnvironments.reduce((sum, e) => sum + e.resources, 0)}
             </div>
             <div className="text-sm text-gray-600">Total Resources</div>
           </CardContent>
@@ -116,7 +149,7 @@ export default function EnvironmentsPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-maruti-black">
-              {formatCurrency(mockEnvironments.reduce((sum, e) => sum + e.cost, 0))}
+              {formatCurrency(allEnvironments.reduce((sum, e) => sum + e.cost, 0))}
             </div>
             <div className="text-sm text-gray-600">Total Cost/Month</div>
           </CardContent>
@@ -161,19 +194,26 @@ export default function EnvironmentsPage() {
                       </Badge>
                     </td>
                     <td className="p-3">
-                      <Badge
-                        variant={
-                          env.status === "active"
-                            ? "success"
-                            : env.status === "provisioning"
-                            ? "info"
-                            : env.status === "partial"
-                            ? "warning"
-                            : "error"
-                        }
-                      >
-                        {env.status}
-                      </Badge>
+                      <div className="space-y-1">
+                        <Badge
+                          variant={
+                            env.status === "active"
+                              ? "success"
+                              : env.status === "provisioning"
+                              ? "info"
+                              : env.status === "partial"
+                              ? "warning"
+                              : "error"
+                          }
+                        >
+                          {env.status}
+                        </Badge>
+                        {env.status === "provisioning" && env.deploymentProgress && (
+                          <div className="text-xs text-gray-600">
+                            {env.completedSRs}/{env.totalSRs} SRs
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="p-3 text-right text-sm">{env.resources}</td>
                     <td className="p-3 text-right text-sm font-semibold">

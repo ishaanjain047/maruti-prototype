@@ -16,6 +16,7 @@ const mockGeneratedSRs: ServiceRequest[] = [
   {
     id: "sr-gen-1",
     type: "infrastructure",
+    category: "compute",
     title: "Provision ECS Cluster",
     description: "Create ECS cluster with m6g.large instances",
     environment: "Project Alpha",
@@ -29,10 +30,12 @@ const mockGeneratedSRs: ServiceRequest[] = [
     approvalChain: [],
     details: { instanceType: "m6g.large", count: 2 },
     notes: [],
+    cost: 180,
   },
   {
     id: "sr-gen-2",
     type: "infrastructure",
+    category: "database",
     title: "Provision RDS PostgreSQL",
     description: "Database instance for application data",
     environment: "Project Alpha",
@@ -46,11 +49,13 @@ const mockGeneratedSRs: ServiceRequest[] = [
     approvalChain: [],
     details: { engine: "postgresql", instanceClass: "db.t4g.medium" },
     notes: [],
+    cost: 160,
   },
   // Network & Security SRs
   {
     id: "sr-gen-3",
     type: "firewall",
+    category: "firewall",
     title: "Firewall: ALB to ECS",
     description: "Allow traffic from load balancer to application servers",
     environment: "Project Alpha",
@@ -64,10 +69,12 @@ const mockGeneratedSRs: ServiceRequest[] = [
     approvalChain: [],
     details: { port: 8080, protocol: "TCP" },
     notes: [],
+    cost: 0,
   },
   {
     id: "sr-gen-4",
     type: "ip_whitelist",
+    category: "firewall",
     title: "IP Whitelist: Payment Gateway",
     description: "Whitelist Razorpay callback IPs",
     environment: "Project Alpha",
@@ -81,11 +88,13 @@ const mockGeneratedSRs: ServiceRequest[] = [
     approvalChain: [],
     details: { ip: "203.45.67.89" },
     notes: [],
+    cost: 0,
   },
   // Access SRs
   {
     id: "sr-gen-5",
     type: "access",
+    category: "iam",
     title: "AD Group: Developers",
     description: "Create AD group for developer access",
     environment: "Project Alpha",
@@ -99,6 +108,7 @@ const mockGeneratedSRs: ServiceRequest[] = [
     approvalChain: [],
     details: { groupName: "SG-ProjectAlpha-Developers" },
     notes: [],
+    cost: 0,
   },
 ]
 

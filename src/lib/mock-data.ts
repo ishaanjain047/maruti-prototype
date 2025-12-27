@@ -75,6 +75,7 @@ export const mockServiceRequests: ServiceRequest[] = [
   {
     id: "sr-1",
     type: "infrastructure",
+    category: "compute",
     title: "Provision ECS Cluster for Microservices",
     description: "Create ECS cluster with m6g.large instances for microservices deployment",
     environment: "env-1",
@@ -105,10 +106,12 @@ export const mockServiceRequests: ServiceRequest[] = [
       storage: "100GB",
     },
     notes: ["Approved for immediate provisioning"],
+    cost: 180,
   },
   {
     id: "sr-2",
     type: "firewall",
+    category: "firewall",
     title: "Firewall Rule for Payment Gateway Integration",
     description: "Allow outbound traffic to payment gateway on port 443",
     environment: "env-1",
@@ -135,10 +138,12 @@ export const mockServiceRequests: ServiceRequest[] = [
     },
     notes: [],
     pendingOn: "Network Team",
+    cost: 0,
   },
   {
     id: "sr-3",
     type: "access",
+    category: "iam",
     title: "Developer Access to Production Database",
     description: "Read-only access for debugging production issues",
     environment: "env-1",
@@ -163,10 +168,12 @@ export const mockServiceRequests: ServiceRequest[] = [
     },
     notes: [],
     pendingOn: "Manager",
+    cost: 0,
   },
   {
     id: "sr-4",
     type: "network",
+    category: "network",
     title: "NAT Gateway Configuration",
     description: "Configure NAT gateway for private subnet internet access",
     environment: "env-2",
@@ -191,6 +198,7 @@ export const mockServiceRequests: ServiceRequest[] = [
     },
     notes: ["Provisioning in progress"],
     pendingOn: "Execution Team",
+    cost: 46,
   },
 ]
 

@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle2, Clock, Download, FileText, Eye } from "lucide-react"
+import { CheckCircle2, Clock, Download, FileText, Eye, ArrowLeft } from "lucide-react"
 import { BOMModal } from "@/components/modals/bom-modal"
 import { SRDetailModal } from "@/components/modals/sr-detail-modal"
 
@@ -196,229 +196,192 @@ export default function Step4Page() {
       case "completed":
         return <Badge variant="success">Completed</Badge>
       case "pending":
-        return <Badge variant="warning">Pending Approval</Badge>
+        return <Badge variant="warning">Pending</Badge>
       case "waiting":
-        return <Badge variant="info">Waiting</Badge>
+        return <Badge variant="outline">Waiting</Badge>
       default:
         return <Badge>{status}</Badge>
     }
   }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "completed":
-        return <CheckCircle2 className="h-5 w-5 text-status-success" />
-      case "pending":
-      case "waiting":
-        return <Clock className="h-5 w-5 text-status-warning" />
-      default:
-        return null
-    }
-  }
-
   return (
     <div className="p-8">
+      {/* Back Navigation */}
+      <Link href="/create/step-3">
+        <Button variant="ghost" size="sm" className="mb-4">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Configuration
+        </Button>
+      </Link>
+
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-maruti-black">
-          SERVICE REQUESTS GENERATED
-        </h1>
-        <p className="mt-2 text-gray-600">Step 4 of 4</p>
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-gray-900">Service Requests Generated</h1>
+        <p className="mt-1 text-sm text-gray-600">Step 4 of 4 • ecommerce-production</p>
       </div>
 
       <div className="mx-auto max-w-6xl space-y-6">
         {/* Success Summary */}
-        <Card className="border-2 border-green-200 bg-green-50">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 text-green-800 mb-4">
-              <CheckCircle2 className="h-6 w-6" />
-              <span className="text-lg font-semibold">
-                Successfully generated {serviceRequests.length} Service Requests
-              </span>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-4">
-              <div>
-                <p className="text-sm text-gray-600">Environment</p>
-                <p className="font-semibold">ecommerce-production</p>
+        <Card className="border-green-200 bg-green-50">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div>
+                  <p className="text-sm text-gray-600">Total SRs</p>
+                  <p className="text-2xl font-semibold text-gray-900">{serviceRequests.length}</p>
+                </div>
+                <div className="h-10 w-px bg-gray-300" />
+                <div>
+                  <p className="text-sm text-gray-600">Environment ID</p>
+                  <p className="text-sm font-medium text-gray-900">ENV-2025-001</p>
+                </div>
+                <div className="h-10 w-px bg-gray-300" />
+                <div>
+                  <p className="text-sm text-gray-600">Total Cost</p>
+                  <p className="text-2xl font-semibold text-gray-900">₹{totalCost}/mo</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Environment ID</p>
-                <p className="font-semibold">ENV-2025-001</p>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => setIsBOMOpen(true)}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  View BOM
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Download className="mr-2 h-4 w-4" />
+                  Download
+                </Button>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Total Cost</p>
-                <p className="font-semibold">₹{totalCost.toFixed(2)}/month</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Deployment Time</p>
-                <p className="font-semibold">18-22 minutes</p>
-              </div>
-            </div>
-
-            <div className="mt-4 flex gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsBOMOpen(true)}
-              >
-                <FileText className="mr-2 h-4 w-4" />
-                View Infrastructure BOM
-              </Button>
-              <Button variant="outline" size="sm">
-                <Download className="mr-2 h-4 w-4" />
-                Download All SRs
-              </Button>
             </div>
           </CardContent>
         </Card>
 
         {/* Service Requests by Category */}
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-maruti-black">
-            📋 SERVICE REQUESTS
-          </h2>
-
           {/* Network */}
           {srsByCategory.network.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 bg-gray-100 p-2 rounded">
-                🌐 NETWORK INFRASTRUCTURE
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                Network Infrastructure
               </h3>
-              {srsByCategory.network.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
-              ))}
+              <div className="space-y-2">
+                {srsByCategory.network.map((sr) => (
+                  <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} onViewDetails={() => setSelectedSR(sr)} />
+                ))}
+              </div>
             </div>
           )}
 
           {/* Database */}
           {srsByCategory.database.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 bg-gray-100 p-2 rounded">
-                💾 DATABASES
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                Databases
               </h3>
-              {srsByCategory.database.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
-              ))}
+              <div className="space-y-2">
+                {srsByCategory.database.map((sr) => (
+                  <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} onViewDetails={() => setSelectedSR(sr)} />
+                ))}
+              </div>
             </div>
           )}
 
           {/* Compute */}
           {srsByCategory.compute.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 bg-gray-100 p-2 rounded">
-                🖥️ COMPUTE RESOURCES
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                Compute Resources
               </h3>
-              {srsByCategory.compute.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
-              ))}
+              <div className="space-y-2">
+                {srsByCategory.compute.map((sr) => (
+                  <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} onViewDetails={() => setSelectedSR(sr)} />
+                ))}
+              </div>
             </div>
           )}
 
           {/* Cache */}
           {srsByCategory.cache.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 bg-gray-100 p-2 rounded">
-                🔄 CACHE
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                Cache
               </h3>
-              {srsByCategory.cache.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
-              ))}
+              <div className="space-y-2">
+                {srsByCategory.cache.map((sr) => (
+                  <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} onViewDetails={() => setSelectedSR(sr)} />
+                ))}
+              </div>
             </div>
           )}
 
           {/* Firewall */}
           {srsByCategory.firewall.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 bg-gray-100 p-2 rounded">
-                🔥 FIREWALL RULES
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                Firewall Rules
               </h3>
-              {srsByCategory.firewall.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
-              ))}
+              <div className="space-y-2">
+                {srsByCategory.firewall.map((sr) => (
+                  <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} onViewDetails={() => setSelectedSR(sr)} />
+                ))}
+              </div>
             </div>
           )}
 
           {/* IAM */}
           {srsByCategory.iam.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 bg-gray-100 p-2 rounded">
-                🔐 IAM & SECURITY
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                IAM & Security
               </h3>
-              {srsByCategory.iam.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
-              ))}
+              <div className="space-y-2">
+                {srsByCategory.iam.map((sr) => (
+                  <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} onViewDetails={() => setSelectedSR(sr)} />
+                ))}
+              </div>
             </div>
           )}
 
           {/* Integration */}
           {srsByCategory.integration.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-700 bg-gray-100 p-2 rounded">
-                🔌 EXTERNAL INTEGRATIONS
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                External Integrations
               </h3>
-              {srsByCategory.integration.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
-              ))}
+              <div className="space-y-2">
+                {srsByCategory.integration.map((sr) => (
+                  <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} onViewDetails={() => setSelectedSR(sr)} />
+                ))}
+              </div>
             </div>
           )}
         </div>
 
-        {/* Summary */}
+        {/* Summary Stats */}
         <Card>
-          <CardHeader>
-            <CardTitle>SUMMARY</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <p className="text-sm text-gray-600">Total SRs: {serviceRequests.length}</p>
-                <p className="text-sm text-gray-600">
-                  ✅ Completed: {completedSRs}
-                </p>
-                <p className="text-sm text-gray-600">
-                  ⏸️ Pending Approval: {pendingSRs}
-                </p>
-                <p className="text-sm text-gray-600">
-                  🕐 Waiting: {waitingSRs}
-                </p>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-6">
+                <div>
+                  <span className="text-gray-600">Completed:</span>{" "}
+                  <span className="font-semibold text-gray-900">{completedSRs}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Pending:</span>{" "}
+                  <span className="font-semibold text-gray-900">{pendingSRs}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Waiting:</span>{" "}
+                  <span className="font-semibold text-gray-900">{waitingSRs}</span>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  Time Saved: 18-25 days (vs manual SR process)
-                </p>
-                <p className="text-sm text-gray-600">
-                  Estimated Deployment: 18-22 minutes total
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded-lg bg-yellow-50 p-3">
-              <p className="font-medium text-sm">Next Actions:</p>
-              <ul className="ml-4 mt-1 space-y-1 text-sm text-gray-700">
-                <li>• Approve SR-002 (Database) → DBA Team</li>
-                <li>• Approve SR-008 (IAM Policy) → Security Team</li>
-                <li>• Once approved, remaining SRs will auto-execute</li>
-              </ul>
+              <Link href="/">
+                <Button className="bg-maruti-blue hover:bg-maruti-blue/90">
+                  Go to Dashboard
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
-
-        {/* Actions */}
-        <div className="flex gap-4">
-          <Button
-            variant="outline"
-            onClick={() => setIsBOMOpen(true)}
-          >
-            <FileText className="mr-2 h-4 w-4" />
-            View Infrastructure BOM
-          </Button>
-          <Link href="/">
-            <Button className="bg-maruti-blue hover:bg-maruti-blue/90">
-              Go to Dashboard
-            </Button>
-          </Link>
-        </div>
       </div>
 
       {/* BOM Modal */}
@@ -436,99 +399,41 @@ export default function Step4Page() {
   )
 }
 
-function SRCard({ sr, getStatusBadge, getStatusIcon, onViewDetails }: any) {
+function SRCard({ sr, getStatusBadge, onViewDetails }: any) {
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3">
-            {getStatusIcon(sr.status)}
-            <div>
-              <CardTitle className="text-lg">{sr.id}: {sr.title}</CardTitle>
-              <div className="mt-2 space-y-1 text-sm">
-                <p className="text-gray-600">Category: {sr.category}</p>
-                <p className="text-gray-600">Template: {sr.template}</p>
+    <Card className="hover:shadow-sm transition-shadow">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4 flex-1">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium text-gray-900">
+                  {sr.id}: {sr.title}
+                </p>
+                <Badge variant="outline" className="text-xs flex-shrink-0">
+                  {sr.category}
+                </Badge>
+                {getStatusBadge(sr.status)}
               </div>
+              {sr.status === "pending" && sr.pendingOn && (
+                <p className="mt-1 text-xs text-gray-600">
+                  Pending: {sr.pendingOn}
+                </p>
+              )}
+              {sr.status === "waiting" && sr.dependencies && (
+                <p className="mt-1 text-xs text-gray-600">
+                  Waiting on: {sr.dependencies.join(", ")}
+                </p>
+              )}
             </div>
           </div>
-          <div className="text-right">
-            {getStatusBadge(sr.status)}
-            <p className="mt-2 text-sm font-semibold">
-              Cost: ₹{sr.cost}/month
-            </p>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <p className="text-sm font-semibold text-gray-900">₹{sr.cost}/mo</p>
+            <Button variant="outline" size="sm" onClick={onViewDetails}>
+              <Eye className="mr-1 h-3 w-3" />
+              Details
+            </Button>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {sr.approval && (
-          <p className="text-sm">
-            <span className="font-medium">Approval:</span> {sr.approval}
-          </p>
-        )}
-
-        {sr.status === "completed" && sr.executedAt && (
-          <p className="text-sm text-status-success">
-            ✅ Executed at {sr.executedAt}
-          </p>
-        )}
-
-        {sr.status === "pending" && sr.pendingOn && (
-          <div className="rounded-lg bg-yellow-50 p-3 text-sm">
-            <p className="font-medium text-yellow-800">
-              ⚠️ Requires {sr.pendingOn} Approval
-            </p>
-            <p className="text-yellow-700">
-              Assigned to: {sr.pendingOn}
-            </p>
-            {sr.notified && (
-              <p className="text-yellow-700">
-                Notified: Yes (Email sent at {sr.notified})
-              </p>
-            )}
-          </div>
-        )}
-
-        {sr.status === "waiting" && sr.dependencies && (
-          <div className="rounded-lg bg-blue-50 p-3 text-sm">
-            <p className="font-medium text-blue-800">
-              🕐 Waiting (Depends on {sr.dependencies.join(", ")})
-            </p>
-          </div>
-        )}
-
-        {sr.details && (
-          <div className="rounded-lg bg-gray-50 p-3 text-sm space-y-1">
-            <p className="font-medium">Configuration:</p>
-            {Object.entries(sr.details).map(([key, value]) => (
-              <p key={key}>
-                • {key.charAt(0).toUpperCase() + key.slice(1)}: {value as string}
-              </p>
-            ))}
-          </div>
-        )}
-
-        {sr.resources && (
-          <div className="rounded-lg bg-green-50 p-3 text-sm space-y-1">
-            <p className="font-medium text-green-800">Resources Created:</p>
-            {Object.entries(sr.resources).map(([key, value]) => (
-              <p key={key} className="text-green-700">
-                • {key.toUpperCase()}: {value as string}
-              </p>
-            ))}
-          </div>
-        )}
-
-        <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" onClick={onViewDetails}>
-            <Eye className="mr-1 h-3 w-3" />
-            View Details
-          </Button>
-          <Button variant="outline" size="sm">
-            View Terraform
-          </Button>
-          <Button variant="outline" size="sm">
-            Add to JIRA
-          </Button>
         </div>
       </CardContent>
     </Card>

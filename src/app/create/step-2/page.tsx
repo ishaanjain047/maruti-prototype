@@ -44,15 +44,15 @@ const thinkingSteps: AIThinkingStep[] = [
   {
     step: 3,
     title: "Deciding Adequate Resources",
-    description: "Analyzing traffic requirements and recommending resources",
+    description: "Analyzing environment type and component requirements",
     status: "pending",
     output: {
-      traffic: "10,000 req/day, 500 concurrent users",
+      environment: "Production",
       tier: "Medium tier resources",
       recommendations: [
         "Application: ECS Fargate (3-6 tasks, auto-scaling)",
-        "Database: db.t4g.small, Multi-AZ",
-        "Cache: cache.t4g.micro",
+        "Database: Production-grade, Multi-AZ",
+        "Cache: Production-grade Redis",
       ],
     },
   },
@@ -251,10 +251,8 @@ export default function Step2Page() {
                           {step.step === 3 && (
                             <div className="space-y-1">
                               <p>
-                                Analyzing traffic requirements (
-                                {step.output.traffic})
+                                Environment: {step.output.environment} → High availability required
                               </p>
-                              <p>Production environment → High availability required</p>
                               <p className="mt-2 font-medium">
                                 Recommendation: {step.output.tier}
                               </p>

@@ -173,7 +173,6 @@ export default function EnvironmentsPage() {
                   <th className="p-3 text-left text-sm font-semibold text-gray-700">Status</th>
                   <th className="p-3 text-right text-sm font-semibold text-gray-700">Resources</th>
                   <th className="p-3 text-right text-sm font-semibold text-gray-700">Cost/Month</th>
-                  <th className="p-3 text-center text-sm font-semibold text-gray-700">Health</th>
                   <th className="p-3 text-left text-sm font-semibold text-gray-700">Created</th>
                   <th className="p-3 text-center text-sm font-semibold text-gray-700">Actions</th>
                 </tr>
@@ -218,23 +217,6 @@ export default function EnvironmentsPage() {
                     <td className="p-3 text-right text-sm">{env.resources}</td>
                     <td className="p-3 text-right text-sm font-semibold">
                       {formatCurrency(env.cost)}
-                    </td>
-                    <td className="p-3 text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <div className="h-2 w-16 overflow-hidden rounded-full bg-gray-200">
-                          <div
-                            className={`h-full ${
-                              env.health >= 95
-                                ? "bg-status-success"
-                                : env.health >= 80
-                                ? "bg-status-warning"
-                                : "bg-status-error"
-                            }`}
-                            style={{ width: `${env.health}%` }}
-                          />
-                        </div>
-                        <span className="text-xs text-gray-600">{env.health}%</span>
-                      </div>
                     </td>
                     <td className="p-3 text-sm text-gray-600">{formatDate(env.createdAt)}</td>
                     <td className="p-3 text-center">

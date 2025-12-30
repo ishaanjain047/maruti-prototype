@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Building2, FileText, BookTemplate, Bell, User } from "lucide-react"
+import { Home, Building2, FileText, BookTemplate, Bell } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navigation = [
@@ -25,11 +25,6 @@ const navigation = [
     name: "Templates",
     href: "/templates",
     icon: BookTemplate,
-  },
-  {
-    name: "Profile",
-    href: "/profile",
-    icon: User,
   },
 ]
 

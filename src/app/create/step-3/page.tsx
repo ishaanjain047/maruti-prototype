@@ -5,57 +5,14 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle2, ArrowLeft, ArrowRight } from "lucide-react"
+import { CheckCircle2, ArrowLeft, ArrowRight, ChevronDown, ChevronUp } from "lucide-react"
 
 export default function Step3Page() {
   const router = useRouter()
-  const [config, setConfig] = useState({
-    // Network
-    vpcCidr: "10.100.0.0/16",
-    availabilityZones: "ap-south-1a, ap-south-1b",
-    environment: "Production",
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
-    // Database
-    dbEngine: "PostgreSQL 15.3",
-    dbInstanceClass: "db.t4g.small",
-    dbStorage: "100",
-    dbMultiAZ: true,
-    dbBackupRetention: "7",
-
-    // Application
-    appTechnology: "Java Spring Boot",
-    appPort: "8080",
-    appCpu: "512",
-    appMemory: "1024",
-    appMinInstances: "3",
-    appMaxInstances: "6",
-
-    // Cache
-    cacheEngine: "Redis 7.0",
-    cacheNodeType: "cache.t4g.micro",
-
-    // CDN
-    cdnEnabled: true,
-    cdnDomain: "ecommerce.maruti.com",
-    cdnSslCertificate: "auto",
-
-    // Integrations
-    integrations: ["razorpay"],
-  })
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    sessionStorage.setItem("step3Data", JSON.stringify(config))
+  const handleSubmit = () => {
     router.push("/create/step-4")
   }
 
@@ -80,382 +37,343 @@ export default function Step3Page() {
 
       <div className="mx-auto max-w-5xl">
         {/* Success Message */}
-        <div className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4">
-          <div className="flex items-center gap-2 text-green-800">
-            <CheckCircle2 className="h-5 w-5" />
-            <span className="font-medium">Analysis Complete!</span>
+        <div className="mb-6 rounded-lg border-2 border-green-200 bg-green-50 p-6">
+          <div className="flex items-center gap-2 text-green-800 mb-2">
+            <CheckCircle2 className="h-6 w-6" />
+            <span className="text-lg font-semibold">Analysis Complete!</span>
           </div>
-          <p className="mt-1 text-sm text-green-700">
-            AI has detected your architecture and pre-filled configurations.
-            Please review and adjust if needed.
+          <p className="text-sm text-green-700">
+            AI has detected your architecture and auto-selected optimal resource sizes.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Network Configuration */}
+        {/* Detected Components Summary */}
+        <div className="space-y-6 mb-6">
+          <h2 className="text-xl font-bold text-maruti-black">📊 DETECTED COMPONENTS</h2>
+
+          {/* Network Infrastructure */}
           <Card>
-            <CardHeader>
-              <CardTitle>🌐 NETWORK CONFIGURATION</CardTitle>
+            <CardHeader className="bg-blue-50">
+              <CardTitle className="text-lg">🌐 Network Infrastructure</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>VPC CIDR</Label>
-                  <Input value={config.vpcCidr} disabled />
-                  <p className="text-xs text-gray-500">(Auto-allocated)</p>
-                </div>
-                <div className="space-y-2">
-                  <Label>Environment</Label>
-                  <Input value={config.environment} disabled />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Availability Zones</Label>
-                <Input value={config.availabilityZones} disabled />
-              </div>
+            <CardContent className="pt-6">
+              <ul className="space-y-2 text-gray-700">
+                <li className="flex items-start gap-2">
+                  <span className="text-maruti-blue">•</span>
+                  <span>VPC with 8 subnets (Public, Private, Database, Cache)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-maruti-blue">•</span>
+                  <span>2 Availability Zones for High Availability</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-maruti-blue">•</span>
+                  <span>NAT Gateway for internet access</span>
+                </li>
+              </ul>
             </CardContent>
           </Card>
 
-          {/* Database Configuration */}
+          {/* Databases */}
           <Card>
-            <CardHeader>
-              <CardTitle>💾 DATABASE CONFIGURATION</CardTitle>
-              <p className="text-sm text-gray-500">(PostgreSQL Detected)</p>
+            <CardHeader className="bg-purple-50">
+              <CardTitle className="text-lg">💾 Databases</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Engine</Label>
-                <Select value={config.dbEngine} onValueChange={(value) => setConfig({ ...config, dbEngine: value })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="PostgreSQL 15.3">PostgreSQL 15.3</SelectItem>
-                    <SelectItem value="PostgreSQL 14.7">PostgreSQL 14.7</SelectItem>
-                    <SelectItem value="MySQL 8.0">MySQL 8.0</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Instance Class</Label>
-                <div className="space-y-2">
-                  {[
-                    { value: "db.t4g.micro", label: "db.t4g.micro" },
-                    { value: "db.t4g.small", label: "db.t4g.small (Recommended for Production)" },
-                    { value: "db.t4g.medium", label: "db.t4g.medium" },
-                  ].map((option) => (
-                    <label
-                      key={option.value}
-                      className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 ${
-                        config.dbInstanceClass === option.value
-                          ? "border-maruti-blue bg-maruti-blue/5"
-                          : "border-gray-200"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="dbInstanceClass"
-                        value={option.value}
-                        checked={config.dbInstanceClass === option.value}
-                        onChange={(e) =>
-                          setConfig({ ...config, dbInstanceClass: e.target.value })
-                        }
-                        className="h-4 w-4 text-maruti-blue"
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-900">PostgreSQL Database</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Size: <Badge variant="outline">Production - Medium</Badge>
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Optimized for production workloads with high availability
+                  </p>
                 </div>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Storage (GB)</Label>
-                  <Input
-                    type="number"
-                    value={config.dbStorage}
-                    onChange={(e) =>
-                      setConfig({ ...config, dbStorage: e.target.value })
-                    }
-                  />
+                <div className="text-right">
+                  <p className="text-sm font-semibold">₹160/month</p>
                 </div>
-                <div className="space-y-2">
-                  <Label>Backup Retention (days)</Label>
-                  <Input value={config.dbBackupRetention} disabled />
-                  <p className="text-xs text-gray-500">(Auto-configured)</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Badge variant="success">Multi-AZ Enabled</Badge>
-                <span className="text-xs text-gray-500">
-                  (Auto-selected for Production)
-                </span>
               </div>
             </CardContent>
           </Card>
 
           {/* Application Servers */}
           <Card>
-            <CardHeader>
-              <CardTitle>🖥️ APPLICATION SERVERS</CardTitle>
-              <p className="text-sm text-gray-500">(3 Containers Detected)</p>
+            <CardHeader className="bg-green-50">
+              <CardTitle className="text-lg">🚀 Application Servers</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Technology</Label>
-                  <Input value={config.appTechnology} disabled />
-                  <p className="text-xs text-gray-500">
-                    (Detected from diagram)
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-900">Backend API (Java Spring Boot)</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Size: <Badge variant="outline">Production - Medium</Badge>
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Auto-scaling: 3-6 instances based on load
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label>Application Port</Label>
-                  <Input
-                    type="number"
-                    value={config.appPort}
-                    onChange={(e) =>
-                      setConfig({ ...config, appPort: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>CPU (vCPU units)</Label>
-                  <Input
-                    type="number"
-                    value={config.appCpu}
-                    onChange={(e) =>
-                      setConfig({ ...config, appCpu: e.target.value })
-                    }
-                  />
-                  <p className="text-xs text-gray-500">512 = 0.5 vCPU</p>
-                </div>
-                <div className="space-y-2">
-                  <Label>Memory (MB)</Label>
-                  <Input
-                    type="number"
-                    value={config.appMemory}
-                    onChange={(e) =>
-                      setConfig({ ...config, appMemory: e.target.value })
-                    }
-                  />
-                  <p className="text-xs text-gray-500">1024 = 1 GB</p>
-                </div>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Min Instances</Label>
-                  <Input
-                    type="number"
-                    value={config.appMinInstances}
-                    onChange={(e) =>
-                      setConfig({ ...config, appMinInstances: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Max Instances</Label>
-                  <Input
-                    type="number"
-                    value={config.appMaxInstances}
-                    onChange={(e) =>
-                      setConfig({ ...config, appMaxInstances: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <p className="text-xs text-gray-500">(Auto-scaling enabled)</p>
-            </CardContent>
-          </Card>
-
-          {/* Cache */}
-          <Card>
-            <CardHeader>
-              <CardTitle>🔄 CACHE</CardTitle>
-              <p className="text-sm text-gray-500">(Redis Detected)</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Engine</Label>
-                  <Input value={config.cacheEngine} disabled />
-                </div>
-                <div className="space-y-2">
-                  <Label>Node Type</Label>
-                  <Select
-                    value={config.cacheNodeType}
-                    onValueChange={(value) =>
-                      setConfig({ ...config, cacheNodeType: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cache.t4g.micro">
-                        cache.t4g.micro
-                      </SelectItem>
-                      <SelectItem value="cache.t4g.small">
-                        cache.t4g.small
-                      </SelectItem>
-                      <SelectItem value="cache.t4g.medium">
-                        cache.t4g.medium
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="text-right">
+                  <p className="text-sm font-semibold">₹180/month</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* CDN */}
+          {/* Cache & Performance */}
           <Card>
-            <CardHeader>
-              <CardTitle>🌐 CDN & STATIC HOSTING</CardTitle>
-              <p className="text-sm text-gray-500">
-                (CloudFront + S3 Detected)
-              </p>
+            <CardHeader className="bg-orange-50">
+              <CardTitle className="text-lg">⚡ Cache & Performance</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Badge variant="success">CloudFront Enabled</Badge>
-                <Badge variant="success">S3 Bucket Created</Badge>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Custom Domain</Label>
-                <Input
-                  value={config.cdnDomain}
-                  onChange={(e) =>
-                    setConfig({ ...config, cdnDomain: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>SSL Certificate</Label>
-                <div className="space-y-2">
-                  {[
-                    { value: "auto", label: "Auto-generate (AWS ACM)" },
-                    { value: "existing", label: "Use existing" },
-                  ].map((option) => (
-                    <label
-                      key={option.value}
-                      className="flex cursor-pointer items-center gap-3"
-                    >
-                      <input
-                        type="radio"
-                        name="cdnSslCertificate"
-                        value={option.value}
-                        checked={config.cdnSslCertificate === option.value}
-                        onChange={(e) =>
-                          setConfig({
-                            ...config,
-                            cdnSslCertificate: e.target.value,
-                          })
-                        }
-                        className="h-4 w-4 text-maruti-blue"
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
+            <CardContent className="pt-6">
+              <ul className="space-y-3">
+                <li className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-900">Redis Cache</p>
+                    <p className="text-sm text-gray-600">
+                      Size: <Badge variant="outline">Production - Small</Badge>
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold">₹15/month</p>
+                  </div>
+                </li>
+                <li className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-900">CloudFront CDN</p>
+                    <p className="text-sm text-gray-600">Global distribution</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold">₹50/month</p>
+                  </div>
+                </li>
+              </ul>
             </CardContent>
           </Card>
 
           {/* External Integrations */}
           <Card>
-            <CardHeader>
-              <CardTitle>🔌 EXTERNAL INTEGRATIONS</CardTitle>
+            <CardHeader className="bg-yellow-50">
+              <CardTitle className="text-lg">🔌 External Integrations</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle2 className="h-4 w-4 text-status-success" />
-                  <span className="font-medium">Razorpay Payment Gateway</span>
-                </div>
-                <p className="text-sm text-gray-600 ml-6">
-                  Status: Pre-Approved Integration
-                </p>
-                <p className="text-sm text-gray-600 ml-6">
-                  Firewall rules will be auto-configured
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Additional Integrations:</Label>
-                <div className="space-y-2">
-                  {[
-                    { id: "twilio", label: "SMS Provider (Twilio)" },
-                    { id: "sendgrid", label: "Email Provider (SendGrid)" },
-                    { id: "salesforce", label: "CRM (Salesforce)" },
-                  ].map((integration) => (
-                    <label
-                      key={integration.id}
-                      className="flex cursor-pointer items-center gap-3"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={config.integrations.includes(integration.id)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setConfig({
-                              ...config,
-                              integrations: [
-                                ...config.integrations,
-                                integration.id,
-                              ],
-                            })
-                          } else {
-                            setConfig({
-                              ...config,
-                              integrations: config.integrations.filter(
-                                (i) => i !== integration.id
-                              ),
-                            })
-                          }
-                        }}
-                        className="h-4 w-4 text-maruti-blue"
-                      />
-                      <span>{integration.label}</span>
-                    </label>
-                  ))}
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-status-success" />
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-900">Razorpay Payment Gateway</p>
+                  <p className="text-sm text-gray-600">
+                    Status: Pre-Approved Integration
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Firewall rules will be auto-configured
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
+        </div>
 
-          {/* Cost Summary */}
-          <div className="rounded-lg bg-blue-50 p-4">
-            <p className="text-lg font-semibold text-maruti-black">
-              Estimated Monthly Cost: ₹{estimatedCost.toFixed(2)}
-            </p>
-          </div>
-
-          {/* Actions */}
-          <div className="flex gap-4">
-            <Link href="/create/step-2" className="flex-1">
-              <Button type="button" variant="outline" className="w-full">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
+        {/* Cost Summary */}
+        <Card className="mb-6 border-2 border-blue-200 bg-blue-50">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">💰 ESTIMATED COST</p>
+                <p className="text-3xl font-bold text-maruti-black mt-1">
+                  ₹{estimatedCost.toFixed(2)}<span className="text-lg text-gray-600">/month</span>
+                </p>
+              </div>
+              <Button variant="outline" size="sm">
+                View Cost Breakdown
               </Button>
-            </Link>
-            <Button
-              type="submit"
-              className="flex-1 bg-maruti-blue hover:bg-maruti-blue/90"
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Advanced Options (Collapsed by Default) */}
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <button
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              className="flex w-full items-center justify-between text-left"
             >
-              Generate SRs
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <div>
+                <p className="font-semibold text-gray-900">⚠️ Need to adjust sizing?</p>
+                <p className="text-sm text-gray-600">
+                  Click to show advanced configuration options
+                </p>
+              </div>
+              {showAdvanced ? (
+                <ChevronUp className="h-5 w-5 text-gray-400" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
+
+            {showAdvanced && (
+              <div className="mt-6 space-y-6 border-t pt-6">
+                <div className="rounded-lg bg-yellow-50 p-4">
+                  <p className="text-sm font-medium text-yellow-800">
+                    ⚠️ Advanced Configuration
+                  </p>
+                  <p className="text-sm text-yellow-700 mt-1">
+                    These options are for power users only. The AI has already selected
+                    optimal configurations based on your environment type.
+                  </p>
+                </div>
+
+                {/* Database Sizing */}
+                <div>
+                  <p className="font-semibold text-gray-900 mb-3">
+                    PostgreSQL Database Sizing
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      {
+                        size: "Small",
+                        desc: "For: Dev/Test, < 100 users",
+                        cost: "₹80/month",
+                        value: "small",
+                      },
+                      {
+                        size: "Medium",
+                        desc: "For: UAT/Staging, 100-1K users",
+                        cost: "₹160/month",
+                        value: "medium",
+                        recommended: true,
+                      },
+                      {
+                        size: "Large",
+                        desc: "For: Production, 1K-10K users",
+                        cost: "₹320/month",
+                        value: "large",
+                      },
+                      {
+                        size: "X-Large",
+                        desc: "For: High-scale production",
+                        cost: "₹640/month",
+                        value: "xlarge",
+                      },
+                    ].map((option) => (
+                      <label
+                        key={option.value}
+                        className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-4 transition-colors ${
+                          option.recommended
+                            ? "border-maruti-blue bg-maruti-blue/5"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="dbSize"
+                          value={option.value}
+                          defaultChecked={option.recommended}
+                          className="h-4 w-4 text-maruti-blue"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-gray-900">
+                              {option.size}
+                            </span>
+                            {option.recommended && (
+                              <Badge variant="success" className="text-xs">
+                                ⭐ AI Recommended
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-600">{option.desc}</p>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-900">
+                          {option.cost}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Application Sizing */}
+                <div>
+                  <p className="font-semibold text-gray-900 mb-3">
+                    Application Server Sizing
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      {
+                        size: "Small",
+                        desc: "1-2 instances, suitable for dev/test",
+                        cost: "₹60/month",
+                        value: "small",
+                      },
+                      {
+                        size: "Medium",
+                        desc: "3-6 instances with auto-scaling",
+                        cost: "₹180/month",
+                        value: "medium",
+                        recommended: true,
+                      },
+                      {
+                        size: "Large",
+                        desc: "6-12 instances with auto-scaling",
+                        cost: "₹360/month",
+                        value: "large",
+                      },
+                    ].map((option) => (
+                      <label
+                        key={option.value}
+                        className={`flex cursor-pointer items-center gap-3 rounded-lg border-2 p-4 transition-colors ${
+                          option.recommended
+                            ? "border-maruti-blue bg-maruti-blue/5"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="appSize"
+                          value={option.value}
+                          defaultChecked={option.recommended}
+                          className="h-4 w-4 text-maruti-blue"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-gray-900">
+                              {option.size}
+                            </span>
+                            {option.recommended && (
+                              <Badge variant="success" className="text-xs">
+                                ⭐ AI Recommended
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-600">{option.desc}</p>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-900">
+                          {option.cost}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Actions */}
+        <div className="flex gap-4">
+          <Link href="/create/step-2" className="flex-1">
+            <Button type="button" variant="outline" className="w-full">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
             </Button>
-          </div>
-        </form>
+          </Link>
+          <Button
+            onClick={handleSubmit}
+            className="flex-1 bg-maruti-blue hover:bg-maruti-blue/90"
+          >
+            Generate SRs
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   )

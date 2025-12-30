@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle2, Clock, Download, FileText, Eye } from "lucide-react"
+import { BOMModal } from "@/components/modals/bom-modal"
+import { SRDetailModal } from "@/components/modals/sr-detail-modal"
 
 // Mock SR data
 const serviceRequests = [
@@ -166,7 +168,8 @@ const serviceRequests = [
 ]
 
 export default function Step4Page() {
-  const [showBOM, setShowBOM] = useState(false)
+  const [isBOMOpen, setIsBOMOpen] = useState(false)
+  const [selectedSR, setSelectedSR] = useState<any>(null)
 
   const completedSRs = serviceRequests.filter((sr) => sr.status === "completed")
     .length
@@ -257,7 +260,7 @@ export default function Step4Page() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setShowBOM(!showBOM)}
+                onClick={() => setIsBOMOpen(true)}
               >
                 <FileText className="mr-2 h-4 w-4" />
                 View Infrastructure BOM
@@ -283,7 +286,7 @@ export default function Step4Page() {
                 🌐 NETWORK INFRASTRUCTURE
               </h3>
               {srsByCategory.network.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} />
+                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
               ))}
             </div>
           )}
@@ -295,7 +298,7 @@ export default function Step4Page() {
                 💾 DATABASES
               </h3>
               {srsByCategory.database.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} />
+                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
               ))}
             </div>
           )}
@@ -307,7 +310,7 @@ export default function Step4Page() {
                 🖥️ COMPUTE RESOURCES
               </h3>
               {srsByCategory.compute.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} />
+                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
               ))}
             </div>
           )}
@@ -319,7 +322,7 @@ export default function Step4Page() {
                 🔄 CACHE
               </h3>
               {srsByCategory.cache.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} />
+                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
               ))}
             </div>
           )}
@@ -331,7 +334,7 @@ export default function Step4Page() {
                 🔥 FIREWALL RULES
               </h3>
               {srsByCategory.firewall.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} />
+                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
               ))}
             </div>
           )}
@@ -343,7 +346,7 @@ export default function Step4Page() {
                 🔐 IAM & SECURITY
               </h3>
               {srsByCategory.iam.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} />
+                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
               ))}
             </div>
           )}
@@ -355,7 +358,7 @@ export default function Step4Page() {
                 🔌 EXTERNAL INTEGRATIONS
               </h3>
               {srsByCategory.integration.map((sr) => (
-                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} />
+                <SRCard key={sr.id} sr={sr} getStatusBadge={getStatusBadge} getStatusIcon={getStatusIcon} onViewDetails={() => setSelectedSR(sr)} />
               ))}
             </div>
           )}
@@ -405,7 +408,7 @@ export default function Step4Page() {
         <div className="flex gap-4">
           <Button
             variant="outline"
-            onClick={() => setShowBOM(!showBOM)}
+            onClick={() => setIsBOMOpen(true)}
           >
             <FileText className="mr-2 h-4 w-4" />
             View Infrastructure BOM
@@ -417,11 +420,23 @@ export default function Step4Page() {
           </Link>
         </div>
       </div>
+
+      {/* BOM Modal */}
+      <BOMModal isOpen={isBOMOpen} onClose={() => setIsBOMOpen(false)} />
+
+      {/* SR Detail Modal */}
+      {selectedSR && (
+        <SRDetailModal
+          isOpen={!!selectedSR}
+          onClose={() => setSelectedSR(null)}
+          sr={selectedSR}
+        />
+      )}
     </div>
   )
 }
 
-function SRCard({ sr, getStatusBadge, getStatusIcon }: any) {
+function SRCard({ sr, getStatusBadge, getStatusIcon, onViewDetails }: any) {
   return (
     <Card>
       <CardHeader>
@@ -504,7 +519,7 @@ function SRCard({ sr, getStatusBadge, getStatusIcon }: any) {
         )}
 
         <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={onViewDetails}>
             <Eye className="mr-1 h-3 w-3" />
             View Details
           </Button>

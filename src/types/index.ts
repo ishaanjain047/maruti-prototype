@@ -13,6 +13,17 @@ export type ServiceRequestType =
   | "storage"
   | "other"
 
+export type ServiceRequestCategory =
+  | "network"
+  | "database"
+  | "compute"
+  | "cache"
+  | "firewall"
+  | "iam"
+  | "integration"
+  | "storage"
+  | "cdn"
+
 export type ServiceRequestStatus =
   | "draft"
   | "pending"
@@ -21,6 +32,7 @@ export type ServiceRequestStatus =
   | "in_progress"
   | "completed"
   | "failed"
+  | "waiting"
 
 export type EnvironmentStatus = "provisioning" | "active" | "failed" | "partial" | "paused"
 
@@ -29,6 +41,7 @@ export type Priority = "high" | "medium" | "low"
 export interface ServiceRequest {
   id: string
   type: ServiceRequestType
+  category: ServiceRequestCategory
   title: string
   description: string
   environment: string
@@ -39,10 +52,19 @@ export interface ServiceRequest {
   createdBy: string
   createdAt: string
   updatedAt: string
+  executedAt?: string
   approvalChain: ApprovalStep[]
   details: Record<string, any>
   notes: string[]
   pendingOn?: string
+  template?: string
+  templateVersion?: string
+  cost: number
+  dependencies?: string[]
+  resourcesCreated?: Record<string, string>
+  terraformCode?: string
+  autoApproved?: boolean
+  executionLevel?: number
 }
 
 export interface ApprovalStep {
@@ -96,6 +118,10 @@ export interface Environment {
   updatedAt: string
   bom?: BOM
   serviceRequests: string[]
+  vpc?: VPCConfig
+  completedSRs?: number
+  totalSRs?: number
+  deploymentProgress?: number
 }
 
 export interface Architecture {
@@ -136,4 +162,76 @@ export interface User {
   email: string
   role: string
   mslId: string
+}
+
+export interface TerraformTemplate {
+  id: string
+  name: string
+  version: string
+  category: ServiceRequestCategory
+  description: string
+  approvalRequired: boolean
+  approvalRole?: string
+  lastUpdated: string
+  parameters: TemplateParameter[]
+  sourceUrl: string
+  documentationUrl?: string
+}
+
+export interface TemplateParameter {
+  name: string
+  type: string
+  description: string
+  required: boolean
+  default?: any
+}
+
+export interface VPCConfig {
+  cidr: string
+  vpcId: number
+  subnets: {
+    public: string[]
+    private: string[]
+    database: string[]
+    cache: string[]
+  }
+  availabilityZones: string[]
+}
+
+export interface Step1FormData {
+  projectName: string
+  environmentType: EnvironmentType
+  expectedRequests: string
+  expectedUsers: string
+  comments?: string
+  diagram?: File
+}
+
+export interface Step3ConfigData {
+  vpc: VPCConfig
+  database?: {
+    engine: string
+    instanceClass: string
+    storage: number
+    multiAZ: boolean
+    backupRetention: number
+  }
+  application?: {
+    technology: string
+    port: number
+    cpu: number
+    memory: number
+    minInstances: number
+    maxInstances: number
+  }
+  cache?: {
+    engine: string
+    nodeType: string
+  }
+  cdn?: {
+    enabled: boolean
+    customDomain?: string
+    sslCertificate: "auto" | "existing"
+  }
+  integrations: string[]
 }
